@@ -1,7 +1,9 @@
-
+package it.ing.sw.v4.p1;
 
 import java.io.Serializable;
 
+import it.ing.sw.Costanti;
+import it.ing.sw.InputDati;
 import it.ing.sw.v4.p2.Archivio;
 import it.ing.sw.v4.p2.Categoria;
 import it.ing.sw.v4.p2.Risorsa;
@@ -77,6 +79,27 @@ public class Operatore extends Utente implements Serializable
     public String visualizzaArchivio(Archivio a)
     {
     	     return a.toString();
+    }
+    
+    public int visualizzaPrestitiPerAnno(ArchivioStorico as, int anno)
+    {
+    	     return as.numeroPrestitiPerAnno(anno);
+    }
+    
+    public int visualizzaProroghePerAnno(ArchivioStorico as, int anno)
+    {
+	     	return as.numeroProroghePerAnno(anno);
+    }
+    
+    public String visualizzaRisorsaPiuRichiesta(ArchivioStorico as, int anno)
+    {
+    	
+    	     return as.getRisorsaPiuRichiesta(anno);
+    }
+    
+    public int visualizzaNumeroPrestitiPerFruitorePerAnno(ArchivioStorico as, Fruitore f, int anno)
+    {
+    	     return as.numeroPrestitiPerFruitorePerAnno(f, a);
     }
     
 }
