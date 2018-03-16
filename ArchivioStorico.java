@@ -1,14 +1,18 @@
+package logica_5;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Vector;
+
+import dominio_5.Risorsa;
 
 public class ArchivioStorico implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 	
-	private Vector <Fruitore> elencoStoricoIscrizioneFruitori;
-	private Vector <Fruitore> elencoStoricoRinnovoIscrizioneFruitori;
-	private Vector <Fruitore> elencoStoricoDecadenzaFruitori;
+	private AnagraficaFruitori elencoStoricoIscrizioneFruitori;
+	private AnagraficaFruitori elencoStoricoRinnovoIscrizioneFruitori;
+	private AnagraficaFruitori elencoStoricoDecadenzaFruitori;
 	
     private ArchivioPrestiti prestitiEProrogheStorici;
 	
@@ -16,35 +20,39 @@ public class ArchivioStorico implements Serializable
 	
 	public ArchivioStorico()
 	{
-		elencoStoricoIscrizioneFruitori = new Vector <Fruitore> ();
-		elencoStoricoRinnovoIscrizioneFruitori = new Vector <Fruitore> ();
-		elencoStoricoDecadenzaFruitori = new Vector <Fruitore> ();
-		elencoRisorseRimosse = new Vector <Risorsa> ();
+		elencoStoricoIscrizioneFruitori = new AnagraficaFruitori();
+		elencoStoricoRinnovoIscrizioneFruitori = new AnagraficaFruitori();
+		elencoStoricoDecadenzaFruitori = new AnagraficaFruitori();
 		
  	   	prestitiEProrogheStorici = new ArchivioPrestiti();
+ 	   	
+		elencoRisorseRimosse = new Vector <Risorsa> ();
 	}
+	
+    public AnagraficaFruitori getElencoStoricoIscrizioneFruitori()
+    {
+    	return elencoStoricoIscrizioneFruitori;
+    }
+    
+    public AnagraficaFruitori getElencoStoricoRinnovoIscrizioneFruitori()
+    {
+    	return elencoStoricoRinnovoIscrizioneFruitori;
+    }
+    
+    public AnagraficaFruitori getElencoStoricoDecadenzaFruitori()
+    {
+    	return elencoStoricoDecadenzaFruitori;
+    }
 	
     public ArchivioPrestiti getPrestitiEProrogheStorici()
     {
     	return prestitiEProrogheStorici;
     }
-	
-	public void aggiungiIscrizioneFruitore(Fruitore f)
-	{
-		elencoStoricoIscrizioneFruitori.add(f);
-	}
-	
-	public void aggiungiRinnovoIscrizioneFruitore(Fruitore f)
-	{
-		elencoStoricoRinnovoIscrizioneFruitori.add(f);
-	}
-	
-	public void aggiungiDecadenzaFruitore(Fruitore f)
-	{
-		elencoStoricoDecadenzaFruitori.add(f);
-	}
-	
-	//Registrazione prestiti
+    
+    public Vector<Risorsa> getElencoRisorseRimosse()
+    {
+    	return elencoRisorseRimosse;
+    }
 	
     public void registraProrogaPrestitoStorico(Prestito p)
     {

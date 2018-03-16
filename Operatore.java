@@ -1,12 +1,9 @@
-package it.ing.sw.v4.p1;
+package logica_5;
 
 import java.io.Serializable;
 
-import it.ing.sw.Costanti;
-import it.ing.sw.InputDati;
-import it.ing.sw.v4.p2.Archivio;
-import it.ing.sw.v4.p2.Categoria;
-import it.ing.sw.v4.p2.Risorsa;
+import dominio_5.Categoria;
+import dominio_5.Risorsa;
 
 /**
  * Questa classe rappresenta il modello di un Operatore
@@ -99,7 +96,7 @@ public class Operatore extends Utente implements Serializable
     
     public int visualizzaNumeroPrestitiPerFruitorePerAnno(ArchivioStorico as, Fruitore f, int anno)
     {
-    	     return as.numeroPrestitiPerFruitorePerAnno(f, a);
+    	     return as.numeroPrestitiPerFruitorePerAnno(f, anno);
     }
     
 }

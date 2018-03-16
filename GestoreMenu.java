@@ -1,18 +1,19 @@
-
+package interazione_5;
 
 import java.io.Serializable;
 import java.time.DateTimeException;
 import java.util.Vector;
 
-import it.ing.sw.*;
+import dominio_5.*;
+import logica_5.*;
+import utility.*;
 
 import java.time.*;
 
 /**
- * Questa classe permette una corretta gestione dell'uso dei menu'. E' essenzialmente suddivisa in tre parti:
- * 1 - Elenco delle costanti che costituiscono le intestazioni dei menu' e le varie opzioni che li compongono
- * 2 - Metodi ausiliari per la gestione delle funzionalita' basilari del software (iscrizione, accesso)
- * 3 - Metodo logicaMenu per la realizzazione delle connessioni tra i vari menu'
+ * Questa classe permette una corretta gestione dell'uso dei menu'. E' essenzialmente suddivisa in due parti:
+ * 1 - Metodi ausiliari per la gestione delle funzionalita' basilari del software (iscrizione, accesso)
+ * 2 - Metodo logicaMenu per la realizzazione delle connessioni tra i vari menu'
  */
 public class GestoreMenu implements Serializable
 {
@@ -24,10 +25,12 @@ public class GestoreMenu implements Serializable
 	 * 
 	 * Pre : af != null
 	 * Pre : af.elenco != null
+	 * Pre : as != null
 	 * 
 	 * @param af : oggetto di tipo AnagraficaFruitori contenente l'elenco dei fruitori presenti ed i metodi per l'esecuzione dei vari controlli
+	 * @param as : oggetto di tipo ArchivioStorico
 	 */
-	public void iscrizione(AnagraficaFruitori af)
+	public void iscrizione(AnagraficaFruitori af, ArchivioStorico as)
 	{
 		String nome = "";
 		String cognome = "";
@@ -151,6 +154,7 @@ public class GestoreMenu implements Serializable
 			if(end)
 			{
 				af.aggiungiFruitore(f);
+				as.getElencoStoricoIscrizioneFruitori().aggiungiFruitore(f);
 				System.out.println(Costanti.ISCRIZIONE_OK);
 			}
 			else
@@ -240,11 +244,11 @@ public class GestoreMenu implements Serializable
           	    
           	if(InputDati.leggiUpperChar(Costanti.INS_PROCEDERE_CAT, "SN") == 'S')
           	{
-          		if((c.getNome()).equalsIgnoreCase("Libri"))  
+          		if((c.getNome()).equalsIgnoreCase(Costanti.LIBRI))  
           		{
           			nuovar = InserimentoRisorsa.inserisciLibro();
           		}
-          		else if((c.getNome()).equalsIgnoreCase("Film"))  
+          		else if((c.getNome()).equalsIgnoreCase(Costanti.FILM))  
           		{
           			nuovar = InserimentoRisorsa.inserisciFilm();
           		}
@@ -276,11 +280,11 @@ public class GestoreMenu implements Serializable
             	int num2 = InputDati.leggiIntero(Costanti.INS_NUMERO_SOTTO_AGGIUNTA_RISORSA, Costanti.NUM_MINIMO, (c.getElencoSottoCategorie()).size());
             	sc = (c.getElencoSottoCategorie()).get(num2-Costanti.NUM_MINIMO);
         	    	    	    	    	    
-            	if((c.getNome()).equalsIgnoreCase("Libri"))  
+            	if((c.getNome()).equalsIgnoreCase(Costanti.LIBRI))  
             	{
             		nuovar = InserimentoRisorsa.inserisciLibro();
             	}
-            	else if((c.getNome()).equalsIgnoreCase("Film"))  
+            	else if((c.getNome()).equalsIgnoreCase(Costanti.FILM))  
             	{
             		nuovar = InserimentoRisorsa.inserisciFilm();
             	}
@@ -316,7 +320,7 @@ public class GestoreMenu implements Serializable
       * @param op: l'operatore che effettua la rimozione della risorsa
       * @param arc: l'archivio da cui rimuovere la risorsa
       */
-     public void rimuoviRisorsa(Operatore op, Archivio arc)
+     public void rimuoviRisorsa(Operatore op, Archivio arc, ArchivioStorico as)
      {
         	Categoria c = null;
  	    SottoCategoria sc = null;
@@ -339,6 +343,7 @@ public class GestoreMenu implements Serializable
          			int num2 = InputDati.leggiIntero(Costanti.INS_NUMERO_RISORSA_RIMOZIONE, Costanti.NUM_MINIMO, (c.getElencoRisorse()).size());
      		    	daEliminare = (c.getElencoRisorse()).get(num2-Costanti.NUM_MINIMO);
      		    	op.rimuoviRisorsaCategoria(daEliminare, c);
+     		    	as.aggiungiRisorsaRimossa(daEliminare);
              		System.out.println(Costanti.OP_SUCCESSO);
      	    	}
 
@@ -371,6 +376,7 @@ public class GestoreMenu implements Serializable
      	      	    	int num3 = InputDati.leggiIntero(Costanti.INS_NUMERO_RISORSA_RIMOZIONE, Costanti.NUM_MINIMO, (sc.getElencoRisorse()).size());
          	    		daEliminare = (sc.getElencoRisorse()).get(num3-Costanti.NUM_MINIMO);
          	    		op.rimuoviRisorsaCategoria(daEliminare, sc);
+         	    		as.aggiungiRisorsaRimossa(daEliminare);
          	           	System.out.println(Costanti.OP_SUCCESSO);
      	      	    }
      	    		
@@ -396,7 +402,7 @@ public class GestoreMenu implements Serializable
       * @param arc: l'archivio delle risorse
       * @param a: l'archivio dei prestiti
       */
-     public void registraPrestito(Fruitore f, Archivio arc, ArchivioPrestiti ap) 
+     public void registraPrestito(Fruitore f, Archivio arc, ArchivioPrestiti ap, ArchivioStorico as) 
      {
      	 Categoria c = null;
      	 SottoCategoria sc = null;
@@ -418,16 +424,19 @@ public class GestoreMenu implements Serializable
        	    	    	 int num = InputDati.leggiIntero(Costanti.INS_NUMERO_RISORSA_PRESTITO, Costanti.NUM_MINIMO, c.getElencoRisorse().size());
        	    	    	 r = c.getElencoRisorse().get(num-Costanti.NUM_MINIMO);
      	    	
-       	    	    	 if(ap.controlloDisponibilitaRisorsa(r) && ap.controlloPerUlteriorePrestito(c, f))
+       	    	    	 if(ap.controlloDisponibilitaRisorsa(r) && ap.controlloPerUlteriorePrestito(c, f.getUsername()) && !(ap.verificaPresenza(r, f.getUsername())))
        	    	    	 {
        	    	    		 nuovo = new Prestito(c, f, r);
        	    	    		 f.registraNuovoPrestito(ap, nuovo);
+       	    	    		 as.getPrestitiEProrogheStorici().aggiungiPrestito(nuovo);
        	    	    		 System.out.println(Costanti.OP_SUCCESSO);
        	    	    	 }
-       	    	    	 else if(!ap.controlloDisponibilitaRisorsa(r))
+       	    	    	 else if(!(ap.controlloDisponibilitaRisorsa(r)))
        	    	    		 System.out.println(Costanti.OP_NO_SUCCESSO_PRESTITO_1);
-       	    	    	 else
+       	    	    	 else if(!(ap.controlloPerUlteriorePrestito(c, f.getUsername())))
        	    	    		 System.out.println(Costanti.OP_NO_SUCCESSO_PRESTITO_2);
+       	    	    	 else
+       	    	    		 System.out.println(Costanti.OP_NO_SUCCESSO_PRESTITO_3);
        	    	     }
 
      	    } 
@@ -453,17 +462,19 @@ public class GestoreMenu implements Serializable
      	    		int num = InputDati.leggiIntero(Costanti.INS_NUMERO_RISORSA_PRESTITO, Costanti.NUM_MINIMO, sc.getElencoRisorse().size());
      	    		r = sc.getElencoRisorse().get(num-Costanti.NUM_MINIMO);
  	
-     	    		if(ap.controlloDisponibilitaRisorsa(r) && ap.controlloPerUlteriorePrestito(c, f))
-     	    		{
-     	    			nuovo = new Prestito(c, f, r);
-     	    			f.registraNuovoPrestito(ap, nuovo);
-     	    			System.out.println(Costanti.OP_SUCCESSO);
-     	    		}
-     	    		else if(!ap.controlloDisponibilitaRisorsa(r))
-     	    			System.out.println(Costanti.OP_NO_SUCCESSO_PRESTITO_1);
-     	    		else
-     	    			System.out.println(Costanti.OP_NO_SUCCESSO_PRESTITO_2);
-     	    		
+ 	    	    	 if(ap.controlloDisponibilitaRisorsa(r) && ap.controlloPerUlteriorePrestito(c, f.getUsername()) && !(ap.verificaPresenza(r, f.getUsername())))
+   	    	    	 {
+   	    	    		 nuovo = new Prestito(c, f, r);
+   	    	    		 f.registraNuovoPrestito(ap, nuovo);
+   	    	    		 as.getPrestitiEProrogheStorici().aggiungiPrestito(nuovo);
+   	    	    		 System.out.println(Costanti.OP_SUCCESSO);
+   	    	    	 }
+   	    	    	 else if(!(ap.controlloDisponibilitaRisorsa(r)))
+   	    	    		 System.out.println(Costanti.OP_NO_SUCCESSO_PRESTITO_1);
+   	    	    	 else if(!(ap.controlloPerUlteriorePrestito(c, f.getUsername())))
+   	    	    		 System.out.println(Costanti.OP_NO_SUCCESSO_PRESTITO_2);
+   	    	    	 else
+   	    	    		 System.out.println(Costanti.OP_NO_SUCCESSO_PRESTITO_3); 		
      	    	}
      	    	
 	       }
@@ -481,7 +492,7 @@ public class GestoreMenu implements Serializable
       * @param f: il fruitore che richiede la proroga
       * @param ap: l'archivio dei prestiti
       */
-     public void richiediProroga(Fruitore f, ArchivioPrestiti ap)  
+     public void richiediProroga(Fruitore f, ArchivioPrestiti ap, ArchivioStorico as)  
      { 
     	    if(ap.getPrestiti(f.getUsername()).size() != Costanti.VUOTO)
     	    {
@@ -489,9 +500,11 @@ public class GestoreMenu implements Serializable
     	
     	       int num = InputDati.leggiIntero(Costanti.INS_NUMERO_PRESTITO_PROROGA, Costanti.NUM_MINIMO, ap.getPrestiti(f.getUsername()).size());
     	       Prestito pr = ap.getElencoPrestiti().get(num-Costanti.NUM_MINIMO);
+    	       Prestito prVecchio = pr;
     	
     	       if(f.registraProrogaPrestito(pr))
     	       {
+    	    	   as.registraProrogaPrestitoStorico(prVecchio);
     	    	   System.out.println(Costanti.OP_SUCCESSO);
     	       }
     	       else
@@ -526,9 +539,9 @@ public class GestoreMenu implements Serializable
     	    int num1 = InputDati.leggiIntero(Costanti.INS_NUMERO_CAT_RICERCA, Costanti.NUM_MINIMO, (arc.getElencoCategorie()).size());
     	    c = (arc.getElencoCategorie()).get(num1-Costanti.NUM_MINIMO);
     	 		
-    	 	if(c.getNome().equalsIgnoreCase("Libri"))
+    	 	if(c.getNome().equalsIgnoreCase(Costanti.LIBRI))
  				return ricercaRisorsaLibri(ut, c);
-    	 	else if(c.getNome().equalsIgnoreCase("Libri"))
+    	 	else if(c.getNome().equalsIgnoreCase(Costanti.FILM))
  				return ricercaRisorsaFilm(ut, c);
     	 	else
     	 		return null;
@@ -552,24 +565,24 @@ public class GestoreMenu implements Serializable
     	
     	    switch(numScelta)
     	    {
- 	    	   case(1): o = InputDati.leggiStringa(Costanti.INS_TITOLO_RISORSA);
- 	    			    s = Costanti.RIC_PER_TITOLO;
+ 	    	   case 1: o = InputDati.leggiStringa(Costanti.INS_TITOLO_RISORSA);
+ 	    			    s = Categoria.RIC_PER_TITOLO;
  	    			    break;
  	    		
- 	    	   case(2): o = InputDati.leggiStringa(Costanti.INS_AUTORE_LIBRO); 
- 	    		        s = Costanti.RIC_PER_AUTORE_I;
+ 	    	   case 2: o = InputDati.leggiStringa(Costanti.INS_AUTORE_LIBRO); 
+ 	    		        s = Categoria.RIC_PER_AUTORE_I;
  	    		        break;
  	       
- 	    	   case(3): o = InputDati.leggiStringa(Costanti.INS_GENERE_RISORSA);
- 	    		        s = Costanti.RIC_PER_GENERE;
+ 	    	   case 3: o = InputDati.leggiStringa(Costanti.INS_GENERE_RISORSA);
+ 	    		        s = Categoria.RIC_PER_GENERE;
  	    		        break;
  	    	   
- 	    	   case(4): o = InputDati.leggiIntero(Costanti.INS_ANNOPUB_RISORSA);
- 	    	   			s = Costanti.RIC_PER_ANNOPUB;
+ 	    	   case 4: o = InputDati.leggiIntero(Costanti.INS_ANNOPUB_RISORSA);
+ 	    	   			s = Categoria.RIC_PER_ANNOPUB;
  	    	   			break;
  	    		
- 	    	   case(5): o = InputDati.leggiStringa(Costanti.INS_CASAED_LIBRO);
- 	    	   			s = Costanti.RIC_PER_CASAED;
+ 	    	   case 5: o = InputDati.leggiStringa(Costanti.INS_CASAED_LIBRO);
+ 	    	   			s = Categoria.RIC_PER_CASAED;
  	    	   			break;
     	    }  
  	    
@@ -594,24 +607,24 @@ public class GestoreMenu implements Serializable
     	
     	    switch(numScelta)
     	    {
-    	    	case(1): o = InputDati.leggiStringa(Costanti.INS_TITOLO_RISORSA);
-    	    			 s = Costanti.RIC_PER_TITOLO;
+    	    	case 1: o = InputDati.leggiStringa(Costanti.INS_TITOLO_RISORSA);
+    	    			 s = Categoria.RIC_PER_TITOLO;
  	    			     break;
  	    		
-    	    	case(2): o = InputDati.leggiStringa(Costanti.INS_REGISTA_FILM); 
- 	    		         s = Costanti.RIC_PER_REGISTA;
+    	    	case 2: o = InputDati.leggiStringa(Costanti.INS_REGISTA_FILM); 
+ 	    		         s = Categoria.RIC_PER_REGISTA;
  	    		         break;
  	       
-    	    	case(3): o = InputDati.leggiStringa(Costanti.INS_ATTORE_FILM);
- 	    		         s = Costanti.RIC_PER_ATTORE_I;
+    	    	case 3: o = InputDati.leggiStringa(Costanti.INS_ATTORE_FILM);
+ 	    		         s = Categoria.RIC_PER_ATTORE_I;
  	                     break;
  	    	   
-    	    	case(4): o = InputDati.leggiIntero(Costanti.INS_ANNOPUB_RISORSA);
- 	                 	 s = Costanti.RIC_PER_ANNOPUB;
+    	    	case 4: o = InputDati.leggiIntero(Costanti.INS_ANNOPUB_RISORSA);
+ 	                 	 s = Categoria.RIC_PER_ANNOPUB;
  	                 	 break;
  	    		
-    	    	case(5): o = InputDati.leggiStringa(Costanti.INS_GENERE_RISORSA);
-    	    			 s = Costanti.RIC_PER_GENERE;
+    	    	case 5: o = InputDati.leggiStringa(Costanti.INS_GENERE_RISORSA);
+    	    			 s = Categoria.RIC_PER_GENERE;
     	    			 break;
     	    }  
  	    
@@ -668,43 +681,42 @@ public class GestoreMenu implements Serializable
    		    return false;
    }
    
-   public String sceltaInformazione(Operatore o, ArchivioStorico as) /// vedere se è possibile costruire un menù g
+   public String sceltaInformazione(Operatore o, AnagraficaFruitori af, ArchivioStorico as)
    {
 	    int numScelta = InputDati.leggiIntero(Costanti.SCELTA_INFORMAZIONE, Costanti.NUM_MINIMO, Costanti.NUM_MASSIMO_RICERCA);
 	    int anno = 0;
 	    Fruitore f = null;
 	    String s = "";
 	    
+	    anno = InputDati.leggiIntero(Costanti.INS_ANNO_RICHIESTO);
+	    
 	    switch(numScelta)
 	    {
-	    	case 1 : anno = InputDati.leggiIntero(Costanti.INS_ANNO_RICHIESTO);
-	    			 s += o.visualizzaPrestitiPerAnno(as, anno);
-	    			     break;
+	    	case 1 : s += o.visualizzaPrestitiPerAnno(as, anno);
+	    			 break;
 	    		
-	    	case 2 : anno = InputDati.leggiIntero(Costanti.INS_ANNO_RICHIESTO);
-	    			s += o.visualizzaProroghePerAnno(as, anno);
-	    			break;
+	    	case 2 : s += o.visualizzaProroghePerAnno(as, anno);
+	    			 break;
 	       
-	    	case 3 : anno = InputDati.leggiIntero(Costanti.INS_ANNO_RICHIESTO);
-					s += o.visualizzaRisorsaPiuRichiesta(as, anno);
-					break;
+	    	case 3 : s += o.visualizzaRisorsaPiuRichiesta(as, anno);
+					 break;
 	    	   
-	    	case 4: anno = InputDati.leggiIntero(Costanti.INS_ANNO_RICHIESTO);
-	    			f = InputDati.leggiStringa(Costanti.INS_FRUITORE_RICHIESTO);
-	    			
-	    			/// dove ricercare l'oggetto fruitore??
-	    			s += o.visualizzaNumeroPrestitiPerFruitorePerAnno(as, f, anno);
-	                 	 break;
+	    	case 4:  s = InputDati.leggiStringa(Costanti.INS_FRUITORE_RICHIESTO);
+	    			 
+	    			 if(af.getFruitore(s) != null)
+	    			 {
+	    				 f = af.getFruitore(s);
+	   	    			 s += o.visualizzaNumeroPrestitiPerFruitorePerAnno(as, f, anno);
+	    			 }
+	    			 else
+	    			 {
+	    				 s += Costanti.FRUITORE_NON_TROVATO;
+	    		 	 }
+	   
+	                 break;
 	    }  
 	    
 	    return s;
-	    
-   }
-   
-   public void controlloScadenze(AnagraficaFruitori af, ArchivioPrestiti ap)
-   {
-   		af.decadenzaFruitore();
-   		ap.scadenzaPrestito();
    }
    
     /**
@@ -723,7 +735,7 @@ public class GestoreMenu implements Serializable
      * @param ao : oggetto di tipo AnagraficaOperatori
      * @param arc : oggetto di tipo Archivio
      * @param ap : oggetto di tipo ArchivioPrestiti
-     * @param as: oggetto di tipo ArchivioStorico
+     * @param as : oggetto di tipo ArchivioStorico
      */
     public void logicaMenu(AnagraficaFruitori af, AnagraficaOperatori ao, Archivio arc, ArchivioPrestiti ap, ArchivioStorico as)
     {
@@ -745,6 +757,8 @@ public class GestoreMenu implements Serializable
           
         do
         {
+        	af.decadenzaFruitore(as);
+        	ap.scadenzaPrestito();
 
            	switch(letteraMenu)
     	    {
@@ -764,7 +778,8 @@ public class GestoreMenu implements Serializable
 	        	        		break;
 	        	    }
     	    		    
-    	    		controlloScadenze(af, ap);
+		        	af.decadenzaFruitore(as);
+		        	ap.scadenzaPrestito(); 
     	    		break;
     	        }
     	          
@@ -774,7 +789,7 @@ public class GestoreMenu implements Serializable
 
 					switch (scelta) 
 					{
-						case 1: iscrizione(af);
+						case 1: iscrizione(af, as);
 								letteraMenu = 'a';
 								break;
 
@@ -785,7 +800,8 @@ public class GestoreMenu implements Serializable
 								break;
 					}
 
-    	    		controlloScadenze(af, ap);
+		        	af.decadenzaFruitore(as);
+		        	ap.scadenzaPrestito(); 
 					break;
 				}
     	          
@@ -813,7 +829,8 @@ public class GestoreMenu implements Serializable
 								break;
 					}
 
-    	    		controlloScadenze(af, ap);
+		        	af.decadenzaFruitore(as);
+		        	ap.scadenzaPrestito(); 
 					break;
 				}
     	          
@@ -824,9 +841,14 @@ public class GestoreMenu implements Serializable
 					switch (scelta) 
 					{
 						case 1: if (attualef.rinnovaIscrizione())
+								{
+									as.getElencoStoricoRinnovoIscrizioneFruitori().aggiungiFruitore(attualef);
 									System.out.println(Costanti.RINNOVO_OK);
+								}
 								else
+								{
 									System.out.println(Costanti.RINNOVO_NON_OK);
+								}
 
 								letteraMenu = 'd';
 								break;
@@ -839,11 +861,11 @@ public class GestoreMenu implements Serializable
 	        		        	letteraMenu = 'd';
 	        		        	break;
 	        		
-						case 4: registraPrestito(attualef, arc, ap);  
+						case 4: registraPrestito(attualef, arc, ap, as);  
 	        		        	letteraMenu = 'd';
 	        		        	break;
 	        		
-						case 5: richiediProroga(attualef, ap);    
+						case 5: richiediProroga(attualef, ap, as);    
 	        	         		letteraMenu = 'd';
 	        	         		break;
 	        		
@@ -868,7 +890,8 @@ public class GestoreMenu implements Serializable
 	        		        	break;
 					}
 
-    	    		controlloScadenze(af, ap);
+		        	af.decadenzaFruitore(as);
+		        	ap.scadenzaPrestito(); 
 					break;
 				}
     	        
@@ -896,7 +919,8 @@ public class GestoreMenu implements Serializable
 								break;
 					}
 
-    	    		controlloScadenze(af, ap);
+		        	af.decadenzaFruitore(as);
+		        	ap.scadenzaPrestito(); 
 					break;
 				}
 
@@ -918,7 +942,7 @@ public class GestoreMenu implements Serializable
      	     	        		letteraMenu = 'f';
      	     	        		break;
      	     		
-	        	     	case 4: rimuoviRisorsa(attualeop, arc);
+	        	     	case 4: rimuoviRisorsa(attualeop, arc, as);
      	     	        		letteraMenu = 'f';
      	     	        		break;
      	     	    
@@ -937,17 +961,18 @@ public class GestoreMenu implements Serializable
 	        	     	
      	     					letteraMenu = 'f';
      	     					break;
-     	     					
-	        	     	case 7: System.out.println(sceltaInformazione(attualeop, as));
+     	     	    
+	        	     	case 7: System.out.println(sceltaInformazione(attualeop, af, as));
 	     						letteraMenu = 'f';
 	        	     			break;
-     	     	    
+	        	     			
 	        	     	case 8: letteraMenu = 'a';
      	        		    	attualeop = null;
      	        		    	break;
 					}
 
-    	    		controlloScadenze(af, ap);
+		        	af.decadenzaFruitore(as);
+		        	ap.scadenzaPrestito();    
 					break;
 				}
     	        
