@@ -182,19 +182,19 @@ public class Categoria implements Serializable
    	    	    
    	    	    switch(cr)
    	    	    {
-   	    	        case RIC_PER_TITOLO: if(r.getTitolo().indexOf((String)o) > -1)
+   	    	        case RIC_PER_TITOLO: if(r.getTitolo().toLowerCase().indexOf(((String)o).toLowerCase()) > -1)
    	    	        									risorseCercate.add(r);
    	    	                             		  break;
    	    	                       
-   	    	        case RIC_PER_AUTORE_I: if(((Libro)r).getAutore().indexOf((String)o) > -1)
+   	    	        case RIC_PER_AUTORE_I: if(((Libro)r).getAutore().toLowerCase().indexOf(((String)o).toLowerCase()) > -1)
    	    	        									risorseCercate.add(r);
                                        				break;
    	    	                       
-   	    	        case RIC_PER_GENERE: if(((Libro)r).getGenere().equalsIgnoreCase((String)o))
+   	    	        case RIC_PER_GENERE: if(r.getGenere().equalsIgnoreCase((String)o))
    	    	        	                     	      risorseCercate.add(r);
    	    	                             		  break;
    	    	                    
-   	    	        case RIC_PER_ANNOPUB: if(((Libro)r).getAnnoPub() ==  (Integer)o)
+   	    	        case RIC_PER_ANNOPUB: if(r.getAnnoPub() ==  (Integer)o)
    	    	        								  risorseCercate.add(r);
    	    	        							  break;
                       
@@ -202,11 +202,11 @@ public class Categoria implements Serializable
    	    	        								  risorseCercate.add(r);
    	    	        						      break;
    	    	        					 
-   	    	        case RIC_PER_REGISTA: if(((Film)r).getRegista().indexOf((String)o) > -1)
+   	    	        case RIC_PER_REGISTA: if(((Film)r).getRegista().toLowerCase().indexOf(((String)o).toLowerCase()) > -1)
    	    	        									risorseCercate.add(r);
    	    	        							   break; 
                 
-   	    	        case RIC_PER_ATTORE_I: if(((Film)r).getAttore().indexOf((String)o) > -1)
+   	    	        case RIC_PER_ATTORE_I: if(((Film)r).getAttore().toLowerCase().indexOf(((String)o).toLowerCase()) > -1)
    	    	        									risorseCercate.add(r);
    	    	        								break;
    	    	    } 	     

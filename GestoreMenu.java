@@ -119,19 +119,19 @@ public class GestoreMenu implements Serializable
 			ins_data = false;
 
 			/**
-			 * I metodi di controllo verificano se non vi sono casi di omonimia tra diversi fruitori, se non vi sono casi di condivisione di username
+			 * I metodi di controllo verificano se un utente gia' iscritto cerca di iscriversi nuovamente, se non vi sono casi di condivisione di username
 			 * e se l'utente e' maggiorenne. In caso di inesattezze vengono reimpostati i parametri di inserimento e viene impedita la fuoriuscita dal ciclo globale
 			 */
-			if(af.verificaOmonimiaFruitori(f.getNome(), f.getCognome(), f.getDataDiNascita()) == true)
+			if(af.verificaPresenza(f.getNome(), f.getCognome(), f.getDataDiNascita()))
 			{
-				System.out.println(Costanti.ISCRIZIONE_NON_OK_OMONIMIA_FRUITORI);
+				System.out.println(Costanti.ISCRIZIONE_NON_OK_FRUITORE_GIA_ISCRITTO);
 				ins_nome = true;
 				ins_cognome = true;
 				ins_data = true;
 				end = false;
 			}
 			
-			if(af.verificaStessoUsername(f.getUsername()) == true)
+			if(af.verificaStessoUsername(f.getUsername()))
 			{
 				System.out.println(Costanti.ISCRIZIONE_NON_OK_STESSO_USERNAME);
 				ins_use = true;
@@ -666,19 +666,28 @@ public class GestoreMenu implements Serializable
     * @param ut: l'utente che effettua la valutazione
     * @param arc: l'archivio delle risorse
     * @param ap: l'archivio dei prestiti
-    * @return true se la risorsa scelta per la valutazione e' disponibile
+    * @return una stringa contenente informazioni riguardo alla disponibilita' di una risorsa
     */
-   public boolean valutazioneDisponibilita(Utente ut, Archivio arc, ArchivioPrestiti ap)
+   public String valutazioneDisponibilita(Utente ut, Archivio arc, ArchivioPrestiti ap)
    {
 	    Vector<Risorsa> risorseTrovate = ricercaRisorsa(ut, arc);
-     	System.out.println(ricercaRisorsaFormatoStringa(risorseTrovate));
+	    String s = "";
+	    System.out.println(ricercaRisorsaFormatoStringa(risorseTrovate));
    	
-     	int num = InputDati.leggiIntero(Costanti.RICHIESTA_DIGITAZIONE_VALUTAZIONE, Costanti.NUM_MINIMO, risorseTrovate.size());
+	    if(risorseTrovate.size() != Costanti.VUOTO)
+	    {
+	    	int num = InputDati.leggiIntero(Costanti.RICHIESTA_DIGITAZIONE_VALUTAZIONE, Costanti.NUM_MINIMO, risorseTrovate.size());
    	
-     	if(ap.controlloDisponibilitaRisorsa(risorseTrovate.get(num-Costanti.NUM_MINIMO)))
-   		    return true;
-     	else
-   		    return false;
+	    	if(ap.controlloDisponibilitaRisorsa(risorseTrovate.get(num-Costanti.NUM_MINIMO)))
+	    		s += Costanti.RISORSA_DISPONIBILE;
+	    	else
+	    		s += Costanti.RISORSA_NON_DISPONIBILE;
+	    
+	    }
+	    else
+	    	s += Costanti.NO_VALUTAZIONE;
+	    
+	    return s;
    }
    
    public String sceltaInformazione(Operatore o, AnagraficaFruitori af, ArchivioStorico as)
@@ -686,37 +695,37 @@ public class GestoreMenu implements Serializable
 	    int numScelta = InputDati.leggiIntero(Costanti.SCELTA_INFORMAZIONE, Costanti.NUM_MINIMO, Costanti.NUM_MASSIMO_RICERCA);
 	    int anno = 0;
 	    Fruitore f = null;
-	    String s = "";
+	    String s1 = "";
 	    
 	    anno = InputDati.leggiIntero(Costanti.INS_ANNO_RICHIESTO);
 	    
 	    switch(numScelta)
 	    {
-	    	case 1 : s += o.visualizzaPrestitiPerAnno(as, anno);
+	    	case 1 : s1 += o.visualizzaPrestitiPerAnno(as, anno);
 	    			 break;
 	    		
-	    	case 2 : s += o.visualizzaProroghePerAnno(as, anno);
+	    	case 2 : s1 += o.visualizzaProroghePerAnno(as, anno);
 	    			 break;
 	       
-	    	case 3 : s += o.visualizzaRisorsaPiuRichiesta(as, anno);
+	    	case 3 : s1 += o.visualizzaRisorsaPiuRichiesta(as, anno);
 					 break;
 	    	   
-	    	case 4:  s = InputDati.leggiStringa(Costanti.INS_FRUITORE_RICHIESTO);
+	    	case 4:  String s2 = InputDati.leggiStringa(Costanti.INS_FRUITORE_RICHIESTO);
 	    			 
-	    			 if(af.getFruitore(s) != null)
+	    			 if(af.getFruitore(s2) != null)
 	    			 {
-	    				 f = af.getFruitore(s);
-	   	    			 s += o.visualizzaNumeroPrestitiPerFruitorePerAnno(as, f, anno);
+	    				 f = af.getFruitore(s2);
+	   	    			 s1 += o.visualizzaNumeroPrestitiPerFruitorePerAnno(as, f, anno);
 	    			 }
 	    			 else
 	    			 {
-	    				 s += Costanti.FRUITORE_NON_TROVATO;
+	    				 s1 += Costanti.FRUITORE_NON_TROVATO;
 	    		 	 }
 	   
 	                 break;
 	    }  
 	    
-	    return s;
+	    return s1;
    }
    
     /**
@@ -873,15 +882,7 @@ public class GestoreMenu implements Serializable
 	        		        	letteraMenu = 'd';
 	        		        	break;
 	        
-						case 7: if (valutazioneDisponibilita(attualef, arc, ap))
-								{	
-									System.out.println(Costanti.RISORSA_DISPONIBILE);
-								}
-								else
-								{
-									System.out.println(Costanti.RISORSA_NON_DISPONIBILE);
-								}
-								
+						case 7: System.out.println(valutazioneDisponibilita(attualef, arc, ap));
 								letteraMenu = 'd';
 								break;
 	        	
@@ -950,15 +951,7 @@ public class GestoreMenu implements Serializable
 	     	        			letteraMenu = 'f';
 	     	        			break;
      	     
-	        	     	case 6: if(valutazioneDisponibilita(attualeop, arc, ap))
-	        	     			{
-	        	     				System.out.println(Costanti.RISORSA_DISPONIBILE);
-	        	     			}
-     	     					else
-     	     					{
-     	     						System.out.println(Costanti.RISORSA_NON_DISPONIBILE);
-     	     					}
-	        	     	
+	        	     	case 6: System.out.println(valutazioneDisponibilita(attualeop, arc, ap));
      	     					letteraMenu = 'f';
      	     					break;
      	     	    
