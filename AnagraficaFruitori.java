@@ -26,7 +26,7 @@ public class AnagraficaFruitori extends Anagrafica implements Serializable
     /**
      * Metodo che restituisce il fruitore avente lo username uguale a quello passato come parametro 
      * altrimenti null
-     * @param u : username del fruitore
+     * @param usef : username del fruitore
      * @return il fruitore con username usef altrimenti null
      */
     public Fruitore getFruitore(String usef)
@@ -115,7 +115,7 @@ public class AnagraficaFruitori extends Anagrafica implements Serializable
    	 	    if ((LocalDate.now().equals(f.getDataDiScadenza())) || (LocalDate.now().isAfter(f.getDataDiScadenza())))
    	 	    {
    	 	    	elenco.remove(f);
-   	 	    	as.getElencoStoricoDecadenzaFruitori().aggiungiFruitore(f);
+   	 	    	as.getDecadenzeFruitoriStoriche().aggiungiFruitore(f);
    	 	    }
    	 	}
 	   

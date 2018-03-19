@@ -154,7 +154,7 @@ public class GestoreMenu implements Serializable
 			if(end)
 			{
 				af.aggiungiFruitore(f);
-				as.getElencoStoricoIscrizioneFruitori().aggiungiFruitore(f);
+				as.getIscrizioniFruitoriStoriche().aggiungiFruitore(f);
 				System.out.println(Costanti.ISCRIZIONE_OK);
 			}
 			else
@@ -315,10 +315,11 @@ public class GestoreMenu implements Serializable
      /**
       * Metodo per la rimozione di una risorsa da una (sotto)categoria dell'archivio
       * 
-      * Pre: (op != null) && (arc != null) && (arc.getElencoCategorie().size != 0)
+      * Pre: (op != null) && (arc != null) && (arc.getElencoCategorie().size != 0) && (as != null)
       * 
       * @param op: l'operatore che effettua la rimozione della risorsa
       * @param arc: l'archivio da cui rimuovere la risorsa
+      * @param as: l'archivio storico
       */
      public void rimuoviRisorsa(Operatore op, Archivio arc, ArchivioStorico as)
      {
@@ -396,11 +397,12 @@ public class GestoreMenu implements Serializable
       * delle condizioni. Se la registrazione del prestito avviene con successo, il prestito viene aggiunto all'archivio
       * dei prestiti
       * 
-      * Pre: (f != null) && (arc != null) && (a != null) && (arc.getElencoCategorie().size != 0)
+      * Pre: (f != null) && (arc != null) && (a != null) && (arc.getElencoCategorie().size != 0) && (as != null)
       * 
       * @param f: il fruitore che vuole effettuare la registrazione del prestito
       * @param arc: l'archivio delle risorse
-      * @param a: l'archivio dei prestiti
+      * @param ap: l'archivio dei prestiti
+      * @param as: l'archivio storico
       */
      public void registraPrestito(Fruitore f, Archivio arc, ArchivioPrestiti ap, ArchivioStorico as) 
      {
@@ -428,7 +430,7 @@ public class GestoreMenu implements Serializable
        	    	    	 {
        	    	    		 nuovo = new Prestito(c, f, r);
        	    	    		 f.registraNuovoPrestito(ap, nuovo);
-       	    	    		 as.getPrestitiEProrogheStorici().aggiungiPrestito(nuovo);
+       	    	    		 as.getPrestitiStorici().aggiungiPrestito(nuovo);
        	    	    		 System.out.println(Costanti.OP_SUCCESSO);
        	    	    	 }
        	    	    	 else if(!(ap.controlloDisponibilitaRisorsa(r)))
@@ -466,7 +468,7 @@ public class GestoreMenu implements Serializable
    	    	    	 {
    	    	    		 nuovo = new Prestito(c, f, r);
    	    	    		 f.registraNuovoPrestito(ap, nuovo);
-   	    	    		 as.getPrestitiEProrogheStorici().aggiungiPrestito(nuovo);
+   	    	    		 as.getPrestitiStorici().aggiungiPrestito(nuovo);
    	    	    		 System.out.println(Costanti.OP_SUCCESSO);
    	    	    	 }
    	    	    	 else if(!(ap.controlloDisponibilitaRisorsa(r)))
@@ -487,10 +489,11 @@ public class GestoreMenu implements Serializable
      /**
       * Metodo di interazione con l'utente per la richiesta della proroga di una risorsa
       * 
-      * Pre: (f != null) && (arc != null) && (ap != null) && (arc.getElencoCategorie().size != 0)
+      * Pre: (f != null) && (arc != null) && (ap != null) && (arc.getElencoCategorie().size != 0) && (as != null)
       * 
       * @param f: il fruitore che richiede la proroga
       * @param ap: l'archivio dei prestiti
+      * @param as: l'archivio storico
       */
      public void richiediProroga(Fruitore f, ArchivioPrestiti ap, ArchivioStorico as)  
      { 
@@ -499,12 +502,11 @@ public class GestoreMenu implements Serializable
     	       System.out.println(f.visualizzaPrestitiInCorso(ap));
     	
     	       int num = InputDati.leggiIntero(Costanti.INS_NUMERO_PRESTITO_PROROGA, Costanti.NUM_MINIMO, ap.getPrestiti(f.getUsername()).size());
-    	       Prestito pr = ap.getElencoPrestiti().get(num-Costanti.NUM_MINIMO);
-    	       Prestito prVecchio = pr;
+    	       Prestito pr = ap.getPrestiti(f.getUsername()).get(num-Costanti.NUM_MINIMO);
     	
     	       if(f.registraProrogaPrestito(pr))
     	       {
-    	    	   as.registraProrogaPrestitoStorico(prVecchio);
+    	    	   as.getPrestitiConProrogheStoriche().aggiungiPrestito(pr);
     	    	   System.out.println(Costanti.OP_SUCCESSO);
     	       }
     	       else
@@ -559,17 +561,17 @@ public class GestoreMenu implements Serializable
       */
      public Vector <Risorsa> ricercaRisorsaLibri(Utente ut, Categoria c)
      {
-    	    int numScelta = InputDati.leggiIntero(Costanti.AVVIO_RICERCA_RISORSE, Costanti.NUM_MINIMO, Costanti.NUM_MASSIMO_RICERCA);
+    	    int numScelta = InputDati.leggiIntero(Costanti.AVVIO_RICERCA_LIBRI, Costanti.NUM_MINIMO, Costanti.NUM_MASSIMO_RICERCA);
     	    Object o = null;
     	    String s = "";
     	
     	    switch(numScelta)
     	    {
- 	    	   case 1: o = InputDati.leggiStringa(Costanti.INS_TITOLO_RISORSA);
+ 	    	   case 1: o = InputDati.leggiStringa(Costanti.INS_PAROLA_TITOLO_RISORSA);
  	    			    s = Categoria.RIC_PER_TITOLO;
  	    			    break;
  	    		
- 	    	   case 2: o = InputDati.leggiStringa(Costanti.INS_AUTORE_LIBRO); 
+ 	    	   case 2: o = InputDati.leggiStringa(Costanti.INS_COGNOME_AUTORE_LIBRO); 
  	    		        s = Categoria.RIC_PER_AUTORE_I;
  	    		        break;
  	       
@@ -607,15 +609,15 @@ public class GestoreMenu implements Serializable
     	
     	    switch(numScelta)
     	    {
-    	    	case 1: o = InputDati.leggiStringa(Costanti.INS_TITOLO_RISORSA);
+    	    	case 1: o = InputDati.leggiStringa(Costanti.INS_PAROLA_TITOLO_RISORSA);
     	    			 s = Categoria.RIC_PER_TITOLO;
  	    			     break;
  	    		
-    	    	case 2: o = InputDati.leggiStringa(Costanti.INS_REGISTA_FILM); 
+    	    	case 2: o = InputDati.leggiStringa(Costanti.INS_COGNOME_REGISTA_FILM); 
  	    		         s = Categoria.RIC_PER_REGISTA;
  	    		         break;
  	       
-    	    	case 3: o = InputDati.leggiStringa(Costanti.INS_ATTORE_FILM);
+    	    	case 3: o = InputDati.leggiStringa(Costanti.INS_COGNOME_ATTORE_FILM);
  	    		         s = Categoria.RIC_PER_ATTORE_I;
  	                     break;
  	    	   
@@ -690,42 +692,62 @@ public class GestoreMenu implements Serializable
 	    return s;
    }
    
-   public String sceltaInformazione(Operatore o, AnagraficaFruitori af, ArchivioStorico as)
+   public String sceltaInterrogazione(Operatore o, AnagraficaFruitori af, ArchivioStorico as)
    {
-	    int numScelta = InputDati.leggiIntero(Costanti.SCELTA_INFORMAZIONE, Costanti.NUM_MINIMO, Costanti.NUM_MASSIMO_RICERCA);
+	    int numScelta = InputDati.leggiIntero(Costanti.SCELTA_INTERROGAZIONE, Costanti.NUM_MINIMO, Costanti.NUM_MASSIMO_RICERCA);
 	    int anno = 0;
 	    Fruitore f = null;
 	    String s1 = "";
+	    String s2 = "";
 	    
-	    anno = InputDati.leggiIntero(Costanti.INS_ANNO_RICHIESTO);
+	    anno = InputDati.leggiIntero(Costanti.INS_ANNO_RICHIESTO, 1990, LocalDate.now().getYear());
 	    
 	    switch(numScelta)
 	    {
-	    	case 1 : s1 += o.visualizzaPrestitiPerAnno(as, anno);
-	    			 break;
+	    	   case 1: s2 = Costanti.NUM_PRESTITI_PER_ANNO + o.visualizzaPrestitiPerAnno(as, anno);
+	    			   break;
 	    		
-	    	case 2 : s1 += o.visualizzaProroghePerAnno(as, anno);
-	    			 break;
+	       case 2: s2 = Costanti.NUM_PROROGHE_PER_ANNO + o.visualizzaProroghePerAnno(as, anno);
+	    			   break;
 	       
-	    	case 3 : s1 += o.visualizzaRisorsaPiuRichiesta(as, anno);
-					 break;
+	       case 3: s2 = o.visualizzaRisorsaPiuRichiesta(as, anno);
+	    	           if(!(s2.equals("")))
+	    	           {
+	    	              s2 = Costanti.TITOLO_RISORSA_PIU_PRESTITI_PER_ANNO + s2;
+	    	           }
+	    	           else
+	    	           {
+	    	        	      s2 = Costanti.TITOLO_RISORSA_SENZA_PRESTITI_PER_ANNO;
+	    	           }
+	    	           break;
 	    	   
-	    	case 4:  String s2 = InputDati.leggiStringa(Costanti.INS_FRUITORE_RICHIESTO);
+	       case 4: s1 = InputDati.leggiStringa(Costanti.INS_FRUITORE_RICHIESTO);
 	    			 
-	    			 if(af.getFruitore(s2) != null)
-	    			 {
-	    				 f = af.getFruitore(s2);
-	   	    			 s1 += o.visualizzaNumeroPrestitiPerFruitorePerAnno(as, f, anno);
-	    			 }
-	    			 else
-	    			 {
-	    				 s1 += Costanti.FRUITORE_NON_TROVATO;
-	    		 	 }
-	   
-	                 break;
+	    			   if(af.getFruitore(s1) != null)
+	    			   {
+	    				  f = af.getFruitore(s1);
+	   	    			  s2 = Costanti.NUM_PRESTITI_PER_FRUITORE_PER_ANNO + o.visualizzaNumeroPrestitiPerFruitorePerAnno(as, f, anno);
+	    			   }
+	    			   else
+	    			   {
+	    				  s2 = Costanti.FRUITORE_NON_TROVATO;
+	    		 	   }
+	    			   break;
 	    }  
 	    
-	    return s1;
+	    return s2;
+   }
+   
+   /**
+    * Metodo di interazione con l'utente per la conferma della richiesta di logout
+    * @return boolean : true se l'utente conferma il logout
+    */
+   public boolean richiestaLogout()
+   {
+   	if(InputDati.leggiUpperChar(Costanti.RICHIESTA_LOGOUT, "SN") == 'S')
+   		return true;
+   	else
+   		return false;
    }
    
     /**
@@ -851,7 +873,7 @@ public class GestoreMenu implements Serializable
 					{
 						case 1: if (attualef.rinnovaIscrizione())
 								{
-									as.getElencoStoricoRinnovoIscrizioneFruitori().aggiungiFruitore(attualef);
+									as.getRinnovoIscrizioniFruitoriStorici().aggiungiFruitore(attualef);
 									System.out.println(Costanti.RINNOVO_OK);
 								}
 								else
@@ -886,9 +908,16 @@ public class GestoreMenu implements Serializable
 								letteraMenu = 'd';
 								break;
 	        	
-						case 8: letteraMenu = 'a';
-	        		        	attualef = null;
-	        		        	break;
+						case 8: if(richiestaLogout())
+								{
+									letteraMenu = 'a';
+									attualef = null;
+								}
+								else
+								{
+									letteraMenu = 'd';
+								}
+								break;
 					}
 
 		        	af.decadenzaFruitore(as);
@@ -955,13 +984,20 @@ public class GestoreMenu implements Serializable
      	     					letteraMenu = 'f';
      	     					break;
      	     	    
-	        	     	case 7: System.out.println(sceltaInformazione(attualeop, af, as));
+	        	     	case 7: System.out.println(sceltaInterrogazione(attualeop, af, as));
 	     						letteraMenu = 'f';
 	        	     			break;
 	        	     			
-	        	     	case 8: letteraMenu = 'a';
-     	        		    	attualeop = null;
-     	        		    	break;
+	        	     	case 8: if(richiestaLogout())
+								{
+     								letteraMenu = 'a';
+     								attualeop = null;
+								}
+								else
+								{
+									letteraMenu = 'f';
+								}
+								break;
 					}
 
 		        	af.decadenzaFruitore(as);

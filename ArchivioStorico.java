@@ -1,75 +1,66 @@
 package logica_5;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.Vector;
 
 import dominio_5.Risorsa;
+import utility.Costanti;
 
 public class ArchivioStorico implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 	
-	private AnagraficaFruitori elencoStoricoIscrizioneFruitori;
-	private AnagraficaFruitori elencoStoricoRinnovoIscrizioneFruitori;
-	private AnagraficaFruitori elencoStoricoDecadenzaFruitori;
-	
-    private ArchivioPrestiti prestitiEProrogheStorici;
+	private AnagraficaFruitori iscrizioniFruitoriStoriche;
+	private AnagraficaFruitori rinnovoIscrizioniFruitoriStorici;
+	private AnagraficaFruitori decadenzeFruitoriStoriche;
+   
+	private ArchivioPrestiti prestitiStorici;
+    private ArchivioPrestiti prestitiConProrogheStoriche;
 	
 	private Vector <Risorsa> elencoRisorseRimosse;
 	
 	public ArchivioStorico()
 	{
-		elencoStoricoIscrizioneFruitori = new AnagraficaFruitori();
-		elencoStoricoRinnovoIscrizioneFruitori = new AnagraficaFruitori();
-		elencoStoricoDecadenzaFruitori = new AnagraficaFruitori();
+		this.iscrizioniFruitoriStoriche = new AnagraficaFruitori();
+		this.rinnovoIscrizioniFruitoriStorici = new AnagraficaFruitori();
+		this.decadenzeFruitoriStoriche = new AnagraficaFruitori();
 		
- 	   	prestitiEProrogheStorici = new ArchivioPrestiti();
+		this.prestitiStorici = new ArchivioPrestiti();	
+ 	   	this.prestitiConProrogheStoriche = new ArchivioPrestiti();
  	   	
 		elencoRisorseRimosse = new Vector <Risorsa> ();
 	}
 	
-    public AnagraficaFruitori getElencoStoricoIscrizioneFruitori()
+    public AnagraficaFruitori getIscrizioniFruitoriStoriche()
     {
-    	return elencoStoricoIscrizioneFruitori;
+    	return iscrizioniFruitoriStoriche;
     }
     
-    public AnagraficaFruitori getElencoStoricoRinnovoIscrizioneFruitori()
+    public AnagraficaFruitori getRinnovoIscrizioniFruitoriStorici()
     {
-    	return elencoStoricoRinnovoIscrizioneFruitori;
+    	return rinnovoIscrizioniFruitoriStorici;
     }
     
-    public AnagraficaFruitori getElencoStoricoDecadenzaFruitori()
+    public AnagraficaFruitori getDecadenzeFruitoriStoriche()
     {
-    	return elencoStoricoDecadenzaFruitori;
+    	return decadenzeFruitoriStoriche;
     }
 	
-    public ArchivioPrestiti getPrestitiEProrogheStorici()
+    public ArchivioPrestiti getPrestitiStorici()
     {
-    	return prestitiEProrogheStorici;
+    	return prestitiStorici;
+    }
+    
+    public ArchivioPrestiti getPrestitiConProrogheStoriche()
+    {
+    	return prestitiConProrogheStoriche;
     }
     
     public Vector<Risorsa> getElencoRisorseRimosse()
     {
     	return elencoRisorseRimosse;
     }
-	
-    public void registraProrogaPrestitoStorico(Prestito p)
-    {
-    	    for(int i = 0; i < prestitiEProrogheStorici.getElencoPrestiti().size(); i++)
-    	    {
-    	    	    Prestito pr = prestitiEProrogheStorici.getElencoPrestiti().get(i);
-    	    	    
-    	    	    if(pr.equals(p))
-    	    	    {
-    	    	    	   LocalDate nuovaDataScadenza = (p.getDataDiScadenzaPrestito()).plusDays((p.getCategoriaAssociata()).getNumeroGiorniRichiestaProroga());
-    	    	    	   pr.setDataDiScadenzaPrestito(nuovaDataScadenza);
-    	    	    	   p.setProrogaNonEffettuata(LocalDate.now());
-    	    	    	   break;
-    	    	    }
-    	    }
-    }
-	
+    
 	public void aggiungiRisorsaRimossa(Risorsa r)
 	{
 		elencoRisorseRimosse.add(r);
@@ -79,9 +70,9 @@ public class ArchivioStorico implements Serializable
     {
     	   int num = 0;
     	   
-    	   for(int i = 0; i < prestitiEProrogheStorici.getElencoPrestiti().size(); i++)
+    	   for(int i = 0; i < prestitiStorici.getElencoPrestiti().size(); i++)
     	   {
-    		   Prestito p = prestitiEProrogheStorici.getElencoPrestiti().get(i);
+    		   Prestito p = prestitiStorici.getElencoPrestiti().get(i);
     		   
     		   if(p.getDataDiInizioPrestito().getYear() == a)
     			    num++;
@@ -94,9 +85,9 @@ public class ArchivioStorico implements Serializable
     {
     	   int num = 0;
     	   
-    	   for(int i = 0; i < prestitiEProrogheStorici.getElencoPrestiti().size(); i++)
+    	   for(int i = 0; i < prestitiStorici.getElencoPrestiti().size(); i++)
     	   {
-    		   Prestito p = prestitiEProrogheStorici.getElencoPrestiti().get(i);
+    		   Prestito p = prestitiStorici.getElencoPrestiti().get(i);
     		   
     		   if(!(p.getProrogaNonEffettuata()))
     		   {
@@ -110,64 +101,62 @@ public class ArchivioStorico implements Serializable
 	
 	public String getRisorsaPiuRichiesta(int anno)
 	{
-		Risorsa r = null;
-		Vector <Prestito> elencoPrestiti = prestitiEProrogheStorici.getElencoPrestiti();
-		Vector <Integer> elencoFrequenzePrestiti = new Vector <Integer>();
-		
+		Risorsa ris = null;
 		int max = 0;
-		   
-		for(int i = 0; i < elencoPrestiti.size(); i++)
+		Vector <Prestito> elencoPrestiti = new Vector <Prestito> ();
+	
+		for(int i = 0; i < prestitiStorici.getElencoPrestiti().size(); i++)
 		{
-			Prestito p = elencoPrestiti.get(i);
+			Prestito p = prestitiStorici.getElencoPrestiti().get(i);
 			
-			if(p.getDataDiInizioPrestito().getYear() != anno)
+			if(p.getDataDiInizioPrestito().getYear() == anno)
 			{
-				elencoPrestiti.remove(i);
+				elencoPrestiti.add(p);
 			}
+		}
+			
+		if(elencoPrestiti.size() != Costanti.VUOTO)
+		{
+		    for(int a = 0; a < elencoPrestiti.size(); a++) 
+		    { 
+			    int num = 0;
+			    Risorsa r1 = elencoPrestiti.get(a).getRisorsaInPrestito();
+			    Risorsa r2 = null;
+					
+			    for(int b = a+1; b < elencoPrestiti.size(); b++)
+			    {
+			    	r2 = elencoPrestiti.get(b).getRisorsaInPrestito();
+			    	if(r2.equals(r1))
+			    		num++;
+			    }
+			
+			    if(num > max)
+			    {
+			    	ris = r1;
+			    	max = num;
+			    }
+			    
+		   }
+           return ris.getTitolo();
 		
 		}
-			
-		for (int a = 0; a < elencoPrestiti.size(); a++) 
-		{
-			int num = 0;
-			
-			Prestito p = elencoPrestiti.get(a);
-					
-			for (int b = 0; b < elencoPrestiti.size(); b++)
-			{
-				if(elencoPrestiti.get(b).getRisorsaInPrestito().equals( p.getRisorsaInPrestito() ) )
-					num++;
-			}
-					
-			elencoFrequenzePrestiti.set(a, num); 				 
-		}
-
-		for (int i = 0; i < elencoFrequenzePrestiti.size(); i++) 
-		{
-			if( elencoFrequenzePrestiti.get(i) > max)
-			{ 
-				max = elencoFrequenzePrestiti.get(i); 
-				r = elencoPrestiti.get(i).getRisorsaInPrestito(); 
-			} 
-				 
-		}
-   
-	    return r.getTitolo();
+		else
+			return "";
 	}
 	
 	public int numeroPrestitiPerFruitorePerAnno(Fruitore f, int a)
 	{
-	    	   int num = 0;
-	    	   
-	    	   for(int i = 0; i < prestitiEProrogheStorici.getElencoPrestiti().size(); i++)
-	    	   {
-	    		   Prestito p = prestitiEProrogheStorici.getElencoPrestiti().get(i);
-	    		   
-	    		   if((p.getFruitoreAssociato().equals(f)) && p.getDataDiInizioPrestito().getYear() == a)
-	    		         num++;
-	    	   }
-	    	   
-	    	   return num;
-	 }
+    	int num = 0;
+    	   
+    	for(int i = 0; i < prestitiStorici.getElencoPrestiti().size(); i++)
+    	{
+    		 Prestito p = prestitiStorici.getElencoPrestiti().get(i);
+    		   
+    		 if((p.getFruitoreAssociato().equals(f)) && p.getDataDiInizioPrestito().getYear() == a)
+    		       num++;
+    	}
+    	   
+    	return num;
+	}
 	
 }

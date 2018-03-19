@@ -10,7 +10,7 @@ public class Main
 	public static final String NOME_FILE = "gestoreRisorse.txt";								
 	public static final String MSG_NO_CAST = "ATTENZIONE PROBLEMI CON IL CAST";			
 	public static final String MSG_OK_FILE = "CARICAMENTO DA FILE EFFETTUATO";			
-	public static final String MSG_NO_FILE = "CARICAMENTO DA FILE NON RIUSCITO. OCCORRE CREARE UNA NUOVA ANAGRAFICA DEI FRUITORI E UN NUOVO ARCHIVIO DELLE RISORSE";			
+	public static final String MSG_NO_FILE = "CARICAMENTO DA FILE NON RIUSCITO. OCCORRE CREARE UNA NUOVA ANAGRAFICA DEI FRUITORI, UN NUOVO ARCHIVIO DELLE RISORSE, UN NUOVO ARCHIVIO PRESTITI E UN NUOVO ARCHIVIO STORICO";			
 	public static final String MSG_SALVA = "SALVATAGGIO DATI";
 	public static final String ERRORE_CONVERSIONE_DATA = "Attenzione! Si e' verificato un errore di conversione della data";	
 	
@@ -95,7 +95,7 @@ public class Main
 		g.logicaMenu(af, ao, arc, ap, as);
 		
 		/**
-		 * L'operazione di salvataggio prevede la costruzione di una nuova RaccoltaDati attraverso i parametri AnagraficaFruitori, AnagraficaOperatori, Archivio e ArchivioPrestiti e l'aggiornamento del file in gestoreRisorse
+		 * L'operazione di salvataggio prevede la costruzione di una nuova RaccoltaDati attraverso i parametri AnagraficaFruitori, AnagraficaOperatori, Archivio, ArchivioPrestiti e ArchivioStorico e l'aggiornamento del file in gestoreRisorse
 		 */
 		System.out.println(MSG_SALVA);
 		rd = new RaccoltaDati(af, ao, arc, ap, as);
