@@ -48,7 +48,7 @@ public class Anagrafica implements Serializable
     /**
      * Metodo che verifica se l'utente, identificato tramite lo username e la password, sia presente nell'elenco
      * 
-     * Pre : elenco != null
+     * @pre : elenco != null
      * 
      * @param u : username dell'utente
      * @param p : password dell'utente

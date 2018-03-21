@@ -16,7 +16,7 @@ public class Main
 	
 	/**
 	 * Metodo main per l'esecuzione del software
-	 * @param args
+	 * @param args: i parametri del main
 	 */
 	public static void main(String[] args) 
 	{

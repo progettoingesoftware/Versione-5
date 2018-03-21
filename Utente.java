@@ -34,6 +34,7 @@ public class Utente implements Serializable
     
     /**
      * Metodi get per il ritorno dei vari attributi della classe Utente
+     * @return i vari attributi della classe Utente
      */
     public String getNome()
     {
@@ -58,7 +59,7 @@ public class Utente implements Serializable
     /**
      * Metodo che permette all'utente di effettuare la ricerca di una risorsa in base alla categoria
      * 
-     * Pre: (c != null) && (o != null)
+     * @pre: (c != null) && (o != null)
      * 
      * @param c: la categoria delle risorse da cercare
      * @param o: il generico oggetto che rappresenta quello che l'utente ha digitato con lo scopo di cercarlo nella categoria
@@ -68,6 +69,20 @@ public class Utente implements Serializable
     public Vector <Risorsa> ricercaRisorse(Categoria c, Object o, String r)
     {
        	 return c.ricercaRisorse(o, r);
+    }
+    
+    /**
+     * Metodo che permette all'utente di sapere se una risorsa è diponibile o no
+     *
+     * @pre: (ap != null) && (r != null)
+     * 
+     * @param ap: l'archivio dei prestiti
+     * @param r: la risorsa di cui valutare la disponibilità
+     * @return true se la risorsa r è disponibile
+     */
+    public boolean valutazioneDisponibilita(ArchivioPrestiti ap, Risorsa r)
+    {
+         return	ap.controlloDisponibilitaRisorsa(r);
     }
     
 }

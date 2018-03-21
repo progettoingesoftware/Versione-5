@@ -62,7 +62,7 @@ public class Categoria implements Serializable
    /**
     * Inizializza il vettore elencoRisorse
     * 
-    * Post: elencoRisorse != null
+    * @post: elencoRisorse != null
     */
    public void inizializzaElencoRisorse()
    {
@@ -72,7 +72,7 @@ public class Categoria implements Serializable
    /**
     * Inizializza il vettore elencoSottoCategoria
     * 
-    * Post: elencoSottoCategorie != null
+    * @post: elencoSottoCategorie != null
     */
    public void inizializzaElencoSottoCategorie()
    {
@@ -81,6 +81,7 @@ public class Categoria implements Serializable
    
    /**
     * Metodi get per il ritorno dei vari attributi della classe Categoria
+    * @return i vari attributi della classe Categoria
     */
    public String getNome()
    {
@@ -120,7 +121,7 @@ public class Categoria implements Serializable
    /**
     * Data una stringa t, questo metodo restituisce l'oggetto Risorsa avente t come titolo, se e' presente
     * 
-    * Pre: elencoRisorse != null
+    * @pre: elencoRisorse != null
     * 
     * @param t: il titolo identificativo di una risorsa
     * @return l'oggetto Risorsa avente t come titolo altrimenti null
@@ -140,8 +141,8 @@ public class Categoria implements Serializable
    /**
     * Metodo che permette l'aggiunta di una risorsa all'elenco delle risorse 
     * 
-    * Pre: (r != null) && !(elencoRisorse.contains(r))
-    * Post: elencoRisorse.contains(r)
+    * @pre: (r != null) && !(elencoRisorse.contains(r))
+    * @post: elencoRisorse.contains(r)
     * 
     * @param r: la risorsa da aggiungere
     */
@@ -153,8 +154,8 @@ public class Categoria implements Serializable
    /**
     * Metodo che permette la rimozione di una risorsa dall'elenco delle risorse
     * 
-    * Pre: (r != null) && (elencoRisorse.contains(r))
-    * Post: !(elencoRisorse.contains(r))
+    * @pre: (r != null) && (elencoRisorse.contains(r))
+    * @post: !(elencoRisorse.contains(r))
     * 
     * @param r: la risorsa da rimuovere
     */
@@ -164,9 +165,9 @@ public class Categoria implements Serializable
    }
  
    /**
-    * Medoto per la ricerca delle risorse all'interno dell'elenco delle risorse
+    * Metodo per la ricerca delle risorse all'interno dell'elenco delle risorse
     * 
-    * Pre: o != null
+    * @pre: o != null
     * 
     * @param o: il generico oggetto che rappresenta quello che l'utente ha digitato con lo scopo di cercarlo nella categoria
     * @param cr: stringa che specifica in base a quale parametro avviene la ricerca
@@ -219,7 +220,7 @@ public class Categoria implements Serializable
     * Metodo per la ricerca di risorse all'interno della categoria oppure all'interno
     * delle varie sottocategorie della categoria, se presenti
     * 
-    * Pre: o != null
+    * @pre: o != null
     * 
     * @param o: il generico oggetto che rappresenta quello che l'utente ha digitato con lo scopo di cercarlo nella categoria
     * @param comeRicercare: stringa che specifica in base a quale parametro avviene la ricerca
@@ -249,7 +250,7 @@ public class Categoria implements Serializable
     * Metodo per l'aggiunta di una sottocategoria all'elenco delle sottocategorie, viene invocato al momento della creazione
     * della struttura dell'archivio nel Main
     * 
-    * Pre: sc != null
+    * @pre: sc != null
     * 
     * @param sc: la sottocategoria da aggiungere
     */
@@ -262,7 +263,7 @@ public class Categoria implements Serializable
     * Metodo che dato una stringa t che rappresenta il titolo della nuova risorsa da inserire in archivio, verifica 
     * se all'interno della categoria associata alla nuova risorsa sia già presente una risorsa con lo stesso titolo
     * 
-    * Pre: elencoSottoCategorie != null  && elencoRisorse != null
+    * @pre: (elencoSottoCategorie != null ) && (elencoRisorse != null)
     * 
     * @param t: il titolo della vuova risorsa da inserire
     * @return true se è già presente una risorsa con il titolo della nuova risorsa da inserire
@@ -292,7 +293,7 @@ public class Categoria implements Serializable
    /**
     * Metodo per la semplice stampa dell'elenco dei titoli delle risorse contenuti in elencoRisorse
     *
-    * Pre: elencoRisorse != null
+    * @pre: elencoRisorse != null
     * 
     * @return la stringa con l'elenco dei titoli delle risorse
     */
@@ -312,7 +313,7 @@ public class Categoria implements Serializable
    /**
     * Metodo per la semplice stampa dell'elenco dei nomi delle sottocategorie associato ad una categoria
     * 
-    * Pre: (c != null) && (elencoSottoCategorie != null)
+    * @pre: elencoSottoCategorie != null
     * 
     * @return la stringa con l'elenco dei nomi delle sottocategorie
     */

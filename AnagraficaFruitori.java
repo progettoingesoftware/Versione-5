@@ -16,7 +16,7 @@ public class AnagraficaFruitori extends Anagrafica implements Serializable
     /**
      * Metodo costruttore della classe AnagraficaFruitori
      * 
-     * Post : elenco != null
+     * @post : elenco != null
      */    
     public AnagraficaFruitori()
     {
@@ -45,7 +45,7 @@ public class AnagraficaFruitori extends Anagrafica implements Serializable
     /**
      * Metodo che permette l'aggiunta di un fruitore all'elenco dei fruitori
      * 
-     * Post : elenco.contains(f)
+     * @post : elenco.contains(f)
      * 
      * @param f : l'oggetto fruitore che si desidera aggiungere
      */
@@ -57,7 +57,7 @@ public class AnagraficaFruitori extends Anagrafica implements Serializable
 	/**
 	 * Metodo che verifica se il fruitore che intende iscriversi e' in realta' gia' iscritto all'applicazione
 	 * 
-	 * Pre : elenco != null
+	 * @pre : (elenco != null) && (dn != null)
 	 * 
 	 * @param n : nome del fruitore
 	 * @param c : cognome del fruitore
@@ -81,7 +81,7 @@ public class AnagraficaFruitori extends Anagrafica implements Serializable
     /**
      * Metodo che verifica se il fruitore che intende iscriversi ha lo stesso username di almeno uno dei fruitori gia' iscritti
      * 
-     * Pre : elenco != null
+     * @pre : elenco != null
      * 
      * @param u : username del nuovo fruitore
      * @return boolean : true se la condizione di uguaglianza e' verificata
@@ -103,8 +103,8 @@ public class AnagraficaFruitori extends Anagrafica implements Serializable
      * Metodo che verifica se la data corrente sia successiva rispetto alla data di scadenza del servizio prevista per uno specifico fruitore;
      * in tal caso procede con la rimozione del suddetto fruitore dall'elenco dei fruitori iscritti
      * 
-     * Pre : elenco != null
-     * Post : elenco.contains(f) == false
+     * @pre : elenco != null
+     * @post : elenco.contains(f) == false
      */
     public void decadenzaFruitore(ArchivioStorico as)
     {
@@ -124,7 +124,7 @@ public class AnagraficaFruitori extends Anagrafica implements Serializable
     /**
      * Metodo toString() ereditato dalla classe String per la creazione di una stringa descrittiva contenente l'elenco ordinato dei vari fruitori
      * 
-     * Pre : elenco != null
+     * @pre : elenco != null
      * 
      * @return la stringa descrittiva
      */    

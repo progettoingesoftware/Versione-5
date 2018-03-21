@@ -20,9 +20,9 @@ public class SottoCategoria extends Categoria implements Serializable
      * Metodo costruttore della classe SottoCategoria. A differenza della superclasse, l'attributo elencoRisorse, che 
      * viene ereditato da essa, e' inizializzato nel costruttore
      * 
-     * Post: elencoRisorse != null
+     * @post: elencoRisorse != null
      * 
-     * @param ns
+     * @param ns : nome della sottocategoria
      */
     public SottoCategoria(String ns)
     {
@@ -33,6 +33,7 @@ public class SottoCategoria extends Categoria implements Serializable
     
     /**
      * Metodo get che restituisce il nome della sottocategoria
+     * @return il nome della sottocategoria
      */
     public String getNome()
     {
@@ -42,7 +43,7 @@ public class SottoCategoria extends Categoria implements Serializable
     /**
      * Metodo toString() per la creazione di una stringa descrittiva contenente i vari attributi dell'oggetto SottoCategoria
      * 
-     * Pre: elencoRisorse != null
+     * @pre: elencoRisorse != null
      * 
      * @return la stringa descrittiva della sottocategoria
      */

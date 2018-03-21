@@ -34,6 +34,7 @@ public abstract class Risorsa implements Serializable
     
     /**
      * Metodi get per il ritorno dei vari attributi della classe Risorsa
+     * @return i vari attributi della classe Risorsa
      */
     public String getTitolo()
     {

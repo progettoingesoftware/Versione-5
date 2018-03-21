@@ -19,7 +19,7 @@ public class Archivio implements Serializable
 	/**
 	 * Metodo costruttore della classe Archivio
 	 * 
-	 * Post: elencoCategorie != null
+	 * @post: elencoCategorie != null
 	 */
 	public Archivio()
 	{
@@ -28,6 +28,7 @@ public class Archivio implements Serializable
 	
 	/**
 	 * Metodo get della classe Archivio
+	 * @return l'attributo elencoCategorie della classe Archivio
 	 */
 	public Vector <Categoria> getElencoCategorie()
 	{
@@ -38,7 +39,8 @@ public class Archivio implements Serializable
 	 * Metodo per l'aggiunta di una categoria all'archivio, viene invocato al momento della creazione della struttura
 	 * dell'archivio nel Main
 	 * 
-	 * Pre: c != null
+	 * @pre: c != null
+	 * @post: elencoCategorie.contains(c)
 	 * 
 	 * @param c: la categoria da aggiungere
 	 */
@@ -50,7 +52,7 @@ public class Archivio implements Serializable
 	/**
 	 * Metodo per la semplice stampa dell'elenco dei nomi delle categorie presenti in archivio
 	 * 
-	 * Pre: elencoCategorie != null
+	 * @pre: elencoCategorie != null
 	 * 
 	 * @return la stringa con l'elenco dei nomi delle categorie dell'archivio
 	 */
@@ -70,7 +72,7 @@ public class Archivio implements Serializable
 	/**
      * Metodo toString() per la creazione di una stringa descrittiva del contenuto dell'archivio
      * 
-     * Pre: elencoCategorie != null
+     * @pre: elencoCategorie != null
      * 
      * @return la stringa descrittiva dell'archivio
      */

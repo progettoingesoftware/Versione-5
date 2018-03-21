@@ -23,8 +23,8 @@ public class Prestito implements Serializable
 	/**
 	 * Metodo costruttore della classe Prestito
 	 * 
-	 * Pre: (c != null) && (f != null) && (r != null)
-	 * Post: dataDiScadenzaPrestito == dataDiInizioPrestito.plusDays(categoriaAssociata.getNumeroMaxGiorniPrestito())
+	 * @pre: (c != null) && (f != null) && (r != null)
+	 * @post: dataDiScadenzaPrestito == dataDiInizioPrestito.plusDays(categoriaAssociata.getNumeroMaxGiorniPrestito())
 	 * 
 	 * @param c: la categoria della risorsa in prestito
 	 * @param f: il fruitore che ha in prestito la risorsa
@@ -42,6 +42,7 @@ public class Prestito implements Serializable
 	
 	/**
 	 * Metodi get per il ritorno dei vari attributi della classe Prestito
+	 * @return i vari attributi della classe Prestito
 	 */
 	public LocalDate getDataDiInizioPrestito()
 	{
@@ -94,10 +95,6 @@ public class Prestito implements Serializable
 	
 	/**
      * Metodo che verifica se le condizioni per effettuare la proroga di un prestito siano soddisfatte o no
-     * 
-     * Pre: elencoPrestiti != null
-     * 
-     * @param daProrogare: il prestito di cui richiedere la proroga
      * @return true se le condizioni per effettuare la proroga del prestito sono soddisfatte
      */
    public boolean prorogaPrestito()

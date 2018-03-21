@@ -12,7 +12,7 @@ public class AnagraficaOperatori extends Anagrafica implements Serializable
 	/**
      * Metodo costruttore della classe AnagraficaOperatori
      * 
-     * Post : elenco != null
+     * @post : elenco != null
      */
 	public AnagraficaOperatori()
     {

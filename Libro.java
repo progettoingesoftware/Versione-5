@@ -19,8 +19,8 @@ public class Libro extends Risorsa implements Serializable
     /**
     * Metodo costruttore della classe Libro
     * 
-    * Pre: a != null
-    * Post: autore_i != null
+    * @pre: a != null
+    * @post: autore_i != null
     * 
     * @param titolo: titolo del libro
     * @param licenze: numero delle licenze del libro
@@ -41,6 +41,7 @@ public class Libro extends Risorsa implements Serializable
     
     /**
     * Metodi get per il ritorno dei vari attributi della classe Libro
+    * @return i vari attributi della classe Libro
     */
     public String getAutore()
     {
@@ -64,7 +65,7 @@ public class Libro extends Risorsa implements Serializable
     /**
      * Metodo toString() per la creazione di una stringa descrittiva contenente i vari attributi dell'oggetto Libro
      * 
-     * Pre: autore_i != null
+     * @pre: autore_i != null
      * 
      * @return la stringa descrittiva del libro
      */
